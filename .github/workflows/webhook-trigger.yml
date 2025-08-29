@@ -1,0 +1,23 @@
+name: 'Glide Webhook Trigger'
+
+on:
+  push:
+    branches:
+      - main # ou master, selon votre branche par défaut
+    paths:
+      - 'data.json' # Ne se déclenche QUE si ce fichier est modifié
+
+jobs:
+  send_webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: 'Send Webhook'
+        run: |
+          JSON_PAYLOAD=$(cat data.json)
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          --data "${JSON_PAYLOAD}" \
+          ${{ secrets.WEBHOOK_URL }}
